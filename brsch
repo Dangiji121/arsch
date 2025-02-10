@@ -1,0 +1,43 @@
+document.addEventListener(&quot;DOMContentLoaded&quot;, function() {
+    var schema = document.getElementById(&quot;breadcrumb-schema&quot;);
+    var jsonData = JSON.parse(schema.textContent);
+
+    // 1&#65039;&#8419; Home Page Breadcrumb  
+    jsonData.itemListElement.push({
+        &quot;@type&quot;: &quot;ListItem&quot;,
+        &quot;position&quot;: 1,
+        &quot;name&quot;: &quot;Home&quot;,   // &#9989; Ensure &quot;name&quot; is always present
+        &quot;item&quot;: window.location.origin
+    });
+
+    // 2&#65039;&#8419; Get Post Labels (Categories)  
+    var postLabels = document.querySelectorAll(&quot;.post-meta a[rel=&#39;tag&#39;]&quot;);
+    if (postLabels.length &gt; 0) {
+        var labelName = postLabels[0].innerText.trim();
+        if (labelName) {   // &#9989; Ensure label has a valid name
+            jsonData.itemListElement.push({
+                &quot;@type&quot;: &quot;ListItem&quot;,
+                &quot;position&quot;: 2,
+                &quot;name&quot;: labelName,
+                &quot;item&quot;: postLabels[0].href
+            });
+        }
+    }
+
+    // 3&#65039;&#8419; Get Post Title &amp; URL  
+    var postTitle = document.querySelector(&quot;.post-title&quot;);
+    if (postTitle) {
+        var titleName = postTitle.innerText.trim();
+        if (titleName) {   // &#9989; Ensure post title is not empty
+            jsonData.itemListElement.push({
+                &quot;@type&quot;: &quot;ListItem&quot;,
+                &quot;position&quot;: 3,
+                &quot;name&quot;: titleName,
+                &quot;item&quot;: window.location.href
+            });
+        }
+    }
+
+    // 4&#65039;&#8419; Update Schema Script  
+    schema.textContent = JSON.stringify(jsonData, null, 2);
+});
